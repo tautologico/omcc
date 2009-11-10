@@ -5,6 +5,10 @@ int main()
 {
   int x;
 
-  z = y + f;
-  x < y == f;
+  z = y + 3 + w;
+  y = w < x == 678;
+
+  printf("Das ist eine string");
+
+  return 0;
 }

@@ -11,6 +11,8 @@
 (*** codigo inicial ***)
 {
   open Parser
+
+  let remove_quotes s = String.sub s 1 (String.length s - 2)
 }
 
 (*** definicoes auxiliares ***)
@@ -24,17 +26,18 @@ let linecmt = "//" [^ '\n']*
 
 
 (*** regras ***)
-rule minic_lexer = parser
+rule next_token = parse
     digit+ as inum          { NUM(int_of_string inum) }    (* literais numericos *)
 
   | "#include <stdio.h>"	{ PROLOG }
+
+  | '"' [^'"' '\n']* '"' as s   { STR (remove_quotes s) }
 
   (* palavras-chave *)
   | "char"			{ CHAR   }
   | "else"			{ ELSE   }
   | "if"			{ IF     }
   | "int"			{ INT    }
-  | "main"			{ MAIN   }
   | "printf"			{ PRINTF }
   | "return"			{ RETURN }
   | "void"			{ VOID   }
@@ -47,8 +50,9 @@ rule minic_lexer = parser
   | '/'				{ DIV    }
   | '<'				{ LT     }
   | "&&"			{ AND    }
-  | '='				{ ATTRIB }
   | "=="			{ EQ     }
+  | '='				{ ATTRIB }
+  | '!'                         { NOT    }
 
   (* pontuacao *)
   | '{'				{ LBRACE }
@@ -56,9 +60,12 @@ rule minic_lexer = parser
   | ';'				{ SEMICOLON }
   | '('				{ LPAREN }
   | ')'				{ RPAREN }
+  | ','                         { COMMA  }
 
 
   | id as text			{ ID(text)  }           (* identificadores *)
 
-  | whitespc			{ minic_lexer lexbuf } 
-  | linecmt			{ minic_lexer lexbuf }
+  | whitespc			{ next_token lexbuf } 
+  | linecmt			{ next_token lexbuf }
+
+  | eof                         { EOF }

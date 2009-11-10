@@ -13,24 +13,20 @@
 type id = string
 
 
-(** programa *)
-type prog = fundecl list
-
-
-(** declaracao de funcao *)
-type fundecl = (typ * id * parm list * vardecl list * stmt list * expr)
-
-
 (** tipos *)
 type typ = Int | Void
 
 
+(** declaracao de variavel *)
+type vardecl = typ * id
+
+
 (** operadores unarios *)
-type unop = UPlus | UMinus | Not
+type unop = UMinus | Not
 
 
 (** operadores binarios *)
-type binop = Plus | Minus | Mult | Div | Lt | And
+type binop = Plus | Minus | Mult | Div | Lt | And | Eq
 
 
 (** expressoes *)
@@ -50,5 +46,15 @@ type stmt =
   | Print of expr
   | Attrib of id * expr
   | Block of stmt list
+
+
+(** declaracao de funcao *)
+type fundecl = (typ * id * vardecl list * vardecl list * stmt list * expr)
+
+
+(** programa *)
+type prog = fundecl list
+
+
 
 
