@@ -60,7 +60,7 @@ como identificadores. A lista de palavras-chave se encontra abaixo.
   %\item \texttt{main}
   \item \texttt{print}
   \item \texttt{return}
-  \item \texttt{void}
+  %\item \texttt{void}
   \item \texttt{while}
 \end{itemize}
 
@@ -127,7 +127,7 @@ para a linguagem se encontra na Figura~\ref{fig:gramminic}.
 Programa        & \produces & Prologo\ DeclFunc+  \\
 Prologo         & \produces & \verb|#include <stdio.h>| \\
 DeclVar         & \produces & Tipo\ id\ \verb|;| \\
-DeclFunc        & \produces & TipoRet\ id\ \verb|( | ListaArgumentos
+DeclFunc        & \produces & Tipo\ id\ \verb|( | ListaArgumentos
                               \verb| )| \\
                 &           & \verb|{ | DeclVar*\ Comando*\ \kword{return}
 			      Exp\ \verb|; }| \\
@@ -135,8 +135,8 @@ ListaArgumentos & \produces & Tipo\ id\ RestoListaArgs* \\
                 & \verb+|+  & \epsilon \\
 RestoListaArgs  & \produces & \verb|, | Tipo\ id \\
 Tipo            & \produces & \kword{int} \\
-TipoRet         & \produces & Tipo \\
-                & \verb+|+  & \kword{void} \\
+%% TipoRet         & \produces & Tipo \\
+%%                 & \verb+|+  & \kword{void} \\
 Comando         & \produces & \verb|{ | Comando* \verb| }| \\
                 & \verb+|+  & \kword{if} \verb|( | Expressao \verb| ) | Comando\  
                               \kword{else} Comando \\

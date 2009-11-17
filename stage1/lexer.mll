@@ -40,7 +40,6 @@ rule next_token = parse
   | "int"			{ INT    }
   | "printf"			{ PRINTF }
   | "return"			{ RETURN }
-  | "void"			{ VOID   }
   | "while"			{ WHILE  }
 
   (* operadores *)
