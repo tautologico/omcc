@@ -27,7 +27,7 @@ como linguagem fonte para o projeto de compilador da disciplina. MiniC
 é um sub-conjunto da linguagem C, ou seja, todo programa MiniC é
 também um programa C, mas há muitas características da linguagem C
 completa que não aparecem em MiniC. Por exemplo, existem poucos 
-tipos básicos (apenas inteiros e caracteres), e não é possível escrever 
+tipos básicos (apenas inteiros), e não é possível escrever 
 o programa usando mais 
 de um arquivo fonte. Não existem protótipos: cada função usada pela
 função \verb|main| deve ser definida antes desta. 
@@ -58,7 +58,7 @@ como identificadores. A lista de palavras-chave se encontra abaixo.
   \item \texttt{if}
   \item \texttt{int}
   %\item \texttt{main}
-  \item \texttt{print}
+  \item \texttt{printf}
   \item \texttt{return}
   %\item \texttt{void}
   \item \texttt{while}
@@ -107,8 +107,7 @@ funções, que poderão ser chamadas de \texttt{main} ou de outras funções.
 As estruturas de controle são apenas \texttt{if} para comandos condicionais 
 e \texttt{while} para loops. Só há dois tipos básicos: inteiros (\texttt{int}) 
 e caracteres (\texttt{char}). 
-O único tipo composto é o array, que pode ter componentes \texttt{int} ou 
-\texttt{char}.
+
 
 A gramática usa a notação $N*$, onde $N$ é um não-terminal, para denotar nenhuma,
 uma ou várias ocorrências de $N$. O terminal $id$ denota um identificador, e o 

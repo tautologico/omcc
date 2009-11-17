@@ -12,7 +12,6 @@ open Parser
 
 let tok2str tok = match tok with
   | PROLOG     -> "PROLOG"
-  | CHAR       -> "CHAR"
   | ELSE       -> "ELSE"
   | IF         -> "IF"
   | INT        -> "INT" 
@@ -39,13 +38,15 @@ let tok2str tok = match tok with
   | ID id      -> "ID " ^ id
   | STR s      -> "STR '" ^ s ^ "'"
 
+
 let main fname = 
   let infile = open_in fname in
   let lexbuf = Lexing.from_channel infile in
-  while true do
-    let tok = Lexer.next_token lexbuf in
-    print_endline (tok2str tok)
-  done
+  let rec main_loop tok = 
+    match tok with 
+      | EOF -> ()
+      | _ -> print_endline (tok2str tok); main_loop (Lexer.next_token lexbuf) in
+  main_loop (Lexer.next_token lexbuf)
 
 let _ = 
   if Array.length Sys.argv < 2 then

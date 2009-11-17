@@ -16,25 +16,35 @@
 \begin{document}
 
 \title{Construção de Compiladores II \\
-       Guia da Linguagem MiniC}
+       Guia da Linguagem MiniC -- Estágio 0}
+
+\author{Andrei de A. Formiga}
 
 \maketitle
 
 \section{Introdução}
 
-Este guia descreve a linguagem de programação MiniC, que será usada
-como linguagem fonte para o projeto de compilador da disciplina. MiniC
-é um sub-conjunto da linguagem C, ou seja, todo programa MiniC é
-também um programa C, mas há muitas características da linguagem C
-completa que não aparecem em MiniC. Por exemplo, existem poucos 
-tipos básicos (apenas inteiros e caracteres), e não é possível escrever 
-o programa usando mais 
-de um arquivo fonte. Não existem protótipos: cada função usada pela
-função \verb|main| deve ser definida antes desta. 
+Este guia descreve o estágio zero da linguagem de programação MiniC. MiniC é uma
+família de versões simplificadas da linguagem C, criada com o propósito de servir 
+em disciplinas para o aprendizado dos compiladores. As versões são classificadas 
+em \emph{estágios}, em que cada estágio inclui tudo que os estágios anteriores e
+inclui novas características. Desta forma, é possível ver o que muda no 
+compilador com a inclusão dessas novas características. O estágio zero, 
+descrito neste guia, é o mais básico da linguagem, contendo suporte apenas 
+a expressões, declaração e chamada de funções. 
 
-Aqui está descrita a estrutura léxica
-da linguagem e sua gramática livre de contexto. Ao final apresentamos alguns
-programas de exemplo simples em MiniC.
+Todos os estágios da linguagem MiniC são sub-conjuntos da linguagem C, ou seja, 
+todo programa MiniC é também um programa C, mas há muitas características da 
+linguagem C completa que não aparecem em MiniC, independente do estágio; 
+obviamente, no estágio zero o número de características que faltam é bastante 
+significativo. Por exemplo, o único tipo suportado é \texttt{int} para inteiros,
+e não é possível escrever o programa usando mais de um arquivo fonte. Não existem 
+protótipos: cada função usada pela função \texttt{main} deve ser definida antes 
+desta. 
+
+Aqui está descrita a estrutura léxica da linguagem e sua gramática livre de 
+contexto. Ao final apresentamos um programas de exemplo usando apenas as 
+características do estágio zero da linguagem MiniC.
 
 
 \section{Estrutura Léxica}
@@ -54,14 +64,15 @@ Descrevemos cada classe a seguir.
 \paragraph{Palavras-chave} Estas são palavras reservadas que não podem ser usadas
 como identificadores. A lista de palavras-chave se encontra abaixo. 
 \begin{itemize}
-  \item \texttt{else}
-  \item \texttt{if}
+%  \item \texttt{else}
+%  \item \texttt{if}
   \item \texttt{int}
   %\item \texttt{main}
-  \item \texttt{print}
+  \item \texttt{printf}
+  \item \texttt{printint}
   \item \texttt{return}
   %\item \texttt{void}
-  \item \texttt{while}
+%  \item \texttt{while}
 \end{itemize}
 
 \paragraph{Identificadores} Os identificadores seguem a mesma regra da
@@ -84,19 +95,20 @@ string, deve-se usar '\verb|\\|'. Uma string representa um array de
 caracteres. Observe que a linguagem não permite variáveis string, apenas 
 literais string para usar em chamadas a \texttt{printf}.
 
-%% [FIX] inconsistente com gramatica
 \paragraph{Operadores} Os operadores binários em MiniC são as quatro 
 operações aritméticas 
 (\verb|+|, \verb|-|, \verb|*| e \verb|/|), os operadores de comparação
-(\verb|==|, \verb|!=|, \verb|<|, \verb|>|, \verb|<=| e \verb|>=|) e os 
-lógicos (\verb|&&| e \verb+||+); há também o operador de atribuição 
-(\verb|=|). O único operador unário é o de negação lógica (\verb|!|).
+(apenas \verb|<| no estágio 0) e os 
+lógicos (apenas \verb|&&|); há também o operador de atribuição 
+(\verb|=|). Os operadores unários são o de negação lógica (\verb|!|) e
+a negação (inverte o sinal de um inteiro), usando um sinal de menos 
+antes do termo a ser negado. 
 
-\paragraph{Comentários} Seguem as mesmas regras da linguagem C: 
-comentários até o final da linha começando com \verb|//| ou comentários
-multi-linha começando com \verb|/*| e terminando com \verb|*/|. Comentários
-multi-linha não podem ser aninhados. 
-
+\paragraph{Comentários} Seguem a convenção de comentários da linguagem C
+para comentários de uma única linha; a sequência de caracteres \verb|//|
+marca o início de comentário, que se estende até o final da mesma linha. 
+Os comentários multi-linha da linguagem C (usando \verb|/*| e \verb|*/|)
+não são suportados no estágio 0. 
 
 \section{Gramática}
 
@@ -104,11 +116,12 @@ Um programa MiniC sempre deve estar contido em apenas um arquivo. É preciso
 ter pelo menos uma função, a função principal, chamada de \texttt{main}. 
 Antes da função principal pode ser definido um número qualquer de outras 
 funções, que poderão ser chamadas de \texttt{main} ou de outras funções.
-As estruturas de controle são apenas \texttt{if} para comandos condicionais 
-e \texttt{while} para loops. Só há dois tipos básicos: inteiros (\texttt{int}) 
-e caracteres (\texttt{char}). 
-O único tipo composto é o array, que pode ter componentes \texttt{int} ou 
-\texttt{char}.
+Não há estruturas de controle de fluxo, portanto não é possível fazer 
+muita coisa com a linguagem no estágio 0. Só há um tipo básico: 
+inteiros (\texttt{int}). Não é possível declarar variáveis; as únicas
+variáveis presentes em programas no estágio 0 são os parâmetros das 
+funções. 
+
 
 A gramática usa a notação $N*$, onde $N$ é um não-terminal, para denotar nenhuma,
 uma ou várias ocorrências de $N$. O terminal $id$ denota um identificador, e o 
@@ -116,7 +129,7 @@ terminal $literalnum$ denota um literal numérico. Os terminais em negrito são
 palavras-chave. Para as expressões aritméticas, assume-se que os operadores
 têm precedência e associatividade padrão. Os operadores aritméticos têm maior
 precedência que os de comparação, e estes têm precedência maior do que os 
-operadores lógicos. A função \texttt{print} imprime um inteiro no console, e 
+operadores lógicos. A função \texttt{printint} imprime um inteiro no console, e 
 é fácil de escrever em C padrão usando \texttt{printf}. A gramática completa 
 para a linguagem se encontra na Figura~\ref{fig:gramminic}.
 
@@ -126,23 +139,22 @@ para a linguagem se encontra na Figura~\ref{fig:gramminic}.
 \begin{array}{lcl}
 Programa        & \produces & Prologo\ DeclFunc+  \\
 Prologo         & \produces & \verb|#include <stdio.h>| \\
-DeclVar         & \produces & Tipo\ id\ \verb|;| \\
-DeclFunc        & \produces & Tipo\ id\ \verb|( | ListaArgumentos
+DeclVar         & \produces & \kword{int}\ id\ \verb|;| \\
+DeclFunc        & \produces & \kword{int}\ id\ \verb|( | ListaArgumentos
                               \verb| )| \\
-                &           & \verb|{ | DeclVar*\ Comando*\ \kword{return}
-			      Exp\ \verb|; }| \\
-ListaArgumentos & \produces & Tipo\ id\ RestoListaArgs* \\
+                &           & \verb|{ | %% DeclVar*\ 
+                              Comando*\ 
+                              \kword{return} Exp\ \verb|; }| \\
+ListaArgumentos & \produces & \kword{int}\ id\ RestoListaArgs* \\
                 & \verb+|+  & \epsilon \\
-RestoListaArgs  & \produces & \verb|, | Tipo\ id \\
-Tipo            & \produces & \kword{int} \\
-%% TipoRet         & \produces & Tipo \\
-%%                 & \verb+|+  & \kword{void} \\
+RestoListaArgs  & \produces & \verb|, | \kword{int}\ id \\
 Comando         & \produces & \verb|{ | Comando* \verb| }| \\
-                & \verb+|+  & \kword{if} \verb|( | Expressao \verb| ) | Comando\  
-                              \kword{else} Comando \\
-                & \verb+|+  & \kword{if} \verb|( | Expressao \verb| ) | Comando  \\
-                & \verb+|+  & \kword{while} \verb|( | Expressao \verb| ) | Comando \\
+%%                 & \verb+|+  & \kword{if} \verb|( | Expressao \verb| ) | Comando\  
+%%                               \kword{else} Comando \\
+%%                 & \verb+|+  & \kword{if} \verb|( | Expressao \verb| ) | Comando  \\
+%%                 & \verb+|+  & \kword{while} \verb|( | Expressao \verb| ) | Comando \\
                 & \verb+|+  & \kword{printf} \verb|( | Expressao \verb| ); | \\
+                & \verb+|+  & \kword{printint} \verb|( | Expressao \verb| ); | \\
                 & \verb+|+  & id \verb| = | Expressao \verb| ;| \\
 Expressao       & \produces & Expressao\ BinOp\ Expressao \\
                 & \verb+|+  & UnOp\ Expressao \\
@@ -158,37 +170,32 @@ RestoListaExp   & \produces & \verb|, | ListaExp \\
                 & \verb+|+  & \varepsilon \\
 \end{array}
 \]
-\caption{Gramática da linguagem MiniC} \label{fig:gramminic}
+\caption{Gramática da linguagem MiniC -- Estágio 0} \label{fig:gramminic}
 \end{figure}
 
 
 \section{Exemplos}
 
-Vemos abaixo um exemplo simples de programa que calcula o fatorial do número 5. 
+Vemos abaixo um exemplo simples de programa que calcula o discriminante da 
+equação de segundo grau $x^2 - 3x + 2$.
 O exemplo está na figura \ref{fig:exfat}.
 
 \begin{figure}[htbp]
 \begin{verbatim}
 #include <stdio.h>
 
-int fatorial(int n)
+int delta(int a, int b, int c)
 {
-   int res;
-  
-   if (n < 1)
-      res = 1;
-   else
-      res = n * fatorial(n - 1);
-
-   return res;
+   return b * b - 4 * a * c;
 }
 
 int main()
 {
-   printint(fatorial(5));
+   // calcula o discriminante da eq. de segundo grau x^2 - 3x + 2
+   printint(delta(1, -3, 2));
 }
 \end{verbatim}
-\caption{Programa de exemplo em MiniC: cálculo do fatorial} \label{fig:exfat}
+\caption{Programa de exemplo em MiniC: cálculo do discriminante} \label{fig:exfat}
 \end{figure}
 
 

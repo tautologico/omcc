@@ -19,7 +19,7 @@
 %token PROLOG
 
 /* palavras-chave */
-%token CHAR ELSE IF INT PRINTF RETURN VOID WHILE 
+%token ELSE IF INT PRINTF PRINTINT RETURN VOID WHILE 
 
 /* operadores */
 %token PLUS MINUS MULT DIV LT AND ATTRIB EQ NOT
@@ -76,7 +76,8 @@ stmts:                        { []       }
 stmt: IF LPAREN expr RPAREN stmt            { If ($3, $5, None)    }
     | IF LPAREN expr RPAREN stmt ELSE stmt  { If ($3, $5, Some $7) }
     | WHILE LPAREN expr RPAREN stmt         { While ($3, $5)       }
-    | PRINTF LPAREN expr RPAREN SEMICOLON   { Print $3             }
+    | PRINTF LPAREN expr RPAREN SEMICOLON   { PrintS $3            }
+    | PRINTINT LPAREN expr RPAREN SEMICOLON { PrintI $3            }
     | ID ATTRIB expr SEMICOLON              { Attrib ($1, $3)      }
     | LBRACE stmts RBRACE                   { Block $2             }
 

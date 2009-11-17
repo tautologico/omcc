@@ -14,7 +14,7 @@ type id = string
 
 
 (** tipos *)
-type typ = Int | Void
+type typ = Int
 
 
 (** declaracao de variavel *)
@@ -41,15 +41,14 @@ type expr =
 
 (** comandos *)
 type stmt = 
-    If of expr * stmt * stmt option
-  | While of expr * stmt
-  | Print of expr
+  | PrintS of expr
+  | PrintI of expr
   | Attrib of id * expr
   | Block of stmt list
 
 
 (** declaracao de funcao *)
-type fundecl = (typ * id * vardecl list * vardecl list * stmt list * expr)
+type fundecl = (typ * id * vardecl list * stmt list * expr)
 
 
 (** programa *)
