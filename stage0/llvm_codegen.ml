@@ -42,9 +42,11 @@ let one = const_int int_type 1
 let str_type = pointer_type (i8_type llcontext)
 
 (** Buffer para conversao de numeros para string (tamanho 20 caracteres) *)
+let itoa_buffer_size = 20
+
 let itoa_buffer = 
   define_global "itoa_buffer" 
-    (const_stringz llcontext (String.make 20 '\000')) the_module
+    (const_stringz llcontext (String.make itoa_buffer_size '\000')) the_module
 
 
 (** Referencia para funcoes externas *)
@@ -52,9 +54,11 @@ let puts =
   declare_function "puts" 
     (function_type int_type [| str_type |]) the_module
 
-let itoa = 
-  declare_function "itoa"
-    (function_type str_type [| int_type; str_type; int_type |]) the_module
+let snprintf = 
+  declare_function "snprintf"
+    (var_arg_function_type int_type [| str_type; int_type; str_type |]) the_module
+
+let format_str = define_global "format_str" (const_stringz llcontext "%d") the_module
 
 
 (** Obtem uma funcao ja compilada para bitcode *)
@@ -114,7 +118,10 @@ let rec translate_stmt (symtbl: sym_table) s = match s with
       let v = translate_expr symtbl e in
 	if type_of v == int_type then
 	  let buffer_ptr = build_gep itoa_buffer [| zero; zero |] "bufferptr" builder in
-	  let _ = build_call itoa [| v; buffer_ptr; const_int int_type 10 |] "" builder in
+	  let format_ptr = build_gep format_str [| zero; zero |] "formatptr" builder in
+	  let size = const_int int_type itoa_buffer_size in
+	  let _ = build_call snprintf 
+                        [| buffer_ptr; size; format_ptr; v |] "" builder in
 	    ignore (build_call puts [| buffer_ptr |] "" builder)
 	else
 	  failwith "printint deve imprimir inteiros"
@@ -150,17 +157,7 @@ let translate_fundef (_, name, parms, stmts, retexp) =
     let _ = build_ret retv builder in
       Llvm_analysis.assert_valid_function f;
       f
-
-(* let convert_str e = match e with *)
-(*     String s -> const_stringz llcontext s  *)
-(*   | _ -> failwith "Expressao nao string" *)
-
-(* let define_string_constants (_, name, parms, stmts, retexp) = *)
-(*   let rec collect stmt = match stmt with *)
-(*       PrintS e ->        *)
-(* 	let c = convert_str e in *)
 	  
-
 
 let translate_program p = 
   List.map translate_fundef p
