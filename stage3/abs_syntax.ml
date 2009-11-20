@@ -14,7 +14,7 @@ type id = string
 
 
 (** tipos *)
-type typ = Int
+type typ = Int | Void
 
 
 (** declaracao de variavel *)
@@ -41,6 +41,8 @@ type expr =
 
 (** comandos *)
 type stmt = 
+    If of expr * stmt * stmt option
+  | While of expr * stmt
   | PrintS of expr
   | PrintI of expr
   | Attrib of id * expr

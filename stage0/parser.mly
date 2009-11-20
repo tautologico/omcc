@@ -64,11 +64,6 @@ restarglst:                   { [] }
           | COMMA arglist     { $2 }
 
 
-vardecls:                     { []        }
-	| vardecl vardecls    { $1 :: $2  }
-
-vardecl: INT ID SEMICOLON     { (Int, $2) }
-
 stmts:                        { []       }
      | stmt stmts             { $1 :: $2 }
 

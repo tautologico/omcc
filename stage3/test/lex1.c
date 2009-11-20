@@ -3,6 +3,8 @@
 
 int main()
 {
+  int x;
+
   z = y + 3 + w;
   y = w < x == 678;
 

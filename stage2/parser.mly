@@ -19,7 +19,7 @@
 %token PROLOG
 
 /* palavras-chave */
-%token ELSE IF INT PRINTF PRINTINT RETURN VOID WHILE 
+%token INT PRINTF PRINTINT RETURN  
 
 /* operadores */
 %token PLUS MINUS MULT DIV LT AND ATTRIB EQ NOT
@@ -55,7 +55,6 @@ fundecl: rtype ID LPAREN arglist RPAREN
 
 
 rtype: INT                    { Int  }
-     | VOID                   { Void }
 
 
 arglist:                      { []              }
@@ -73,13 +72,11 @@ vardecl: INT ID SEMICOLON     { (Int, $2) }
 stmts:                        { []       }
      | stmt stmts             { $1 :: $2 }
 
-stmt: IF LPAREN expr RPAREN stmt            { If ($3, $5, None)    }
-    | IF LPAREN expr RPAREN stmt ELSE stmt  { If ($3, $5, Some $7) }
-    | WHILE LPAREN expr RPAREN stmt         { While ($3, $5)       }
+stmt: LBRACE stmts RBRACE                   { Block $2             }
     | PRINTF LPAREN expr RPAREN SEMICOLON   { PrintS $3            }
     | PRINTINT LPAREN expr RPAREN SEMICOLON { PrintI $3            }
     | ID ATTRIB expr SEMICOLON              { Attrib ($1, $3)      }
-    | LBRACE stmts RBRACE                   { Block $2             }
+
 
 expr: andexpr                 { $1 }
 
