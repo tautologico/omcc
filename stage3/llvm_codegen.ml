@@ -98,6 +98,7 @@ and translate_binop op lop rop = match op with
   | Div   -> build_sdiv lop rop "divtmp" builder
   | And   -> build_and  lop rop "andtmp" builder
   | Lt    -> build_icmp Icmp.Slt lop rop "lttmp" builder
+  | Gt    -> build_icmp Icmp.Sgt lop rop "gttmp" builder
   | Eq    -> build_icmp Icmp.Eq lop rop "eqtmp" builder
 and translate_unop op rand = match op with
     UMinus -> build_sub zero rand "negtmp" builder   (* -x = 0 - x *)
@@ -109,8 +110,26 @@ let check_string e = match e with
     String _ -> true
   | _        -> false
 
+let translate_condition symtbl cond inv = 
+  let cval = translate_expr symtbl cond in
+  let i1_ty = i1_type llcontext in
+    build_trunc cval i1_ty "cbool" builder  (* converte resultado para booleano *)
+
+(*   if inv then *)
+(*     build_icmp Icmp.Eq cval zero "cond" builder *)
+(*   else *)
+(*     build_icmp Icmp.Ne cval zero "cond" builder  *)
+
+
+let insert_branch_at_end src_block dest_block = 
+  (
+    position_at_end src_block builder;
+    ignore (build_br dest_block builder)
+  )
+  
+
 (** Traduz um comando *)
-let rec translate_stmt (symtbl: sym_table) s = match s with
+let rec translate_stmt f (symtbl: sym_table) s = match s with
     PrintS e -> 
       if check_string e then 
 	let v = translate_expr symtbl e in
@@ -133,7 +152,47 @@ let rec translate_stmt (symtbl: sym_table) s = match s with
       let nv = translate_expr symtbl e in
       let va = find_variable symtbl v in
         ignore (build_store nv va builder)
-  | Block sl -> ignore (List.map (translate_stmt symtbl) sl)
+  | Block sl -> ignore (List.map (translate_stmt f symtbl) sl)
+  | If (cond, then_st, oelse_st) -> 
+      ignore (build_conditional f symtbl cond then_st oelse_st)
+  | While (cond, st) -> ignore (build_loop f symtbl cond st)
+and build_conditional f symtbl cond then_st oelse_st = 
+  let cond_val = translate_condition symtbl cond false in
+  let start_bb = insertion_block builder in
+  let then_bb = append_block llcontext "then" f in
+  let _ = position_at_end then_bb builder in
+  let _ = translate_stmt f symtbl then_st in
+  let endif_bb = append_block llcontext "fimif" f in
+  let _ = position_at_end endif_bb builder in
+    match oelse_st with
+      | Some else_st -> 
+          let else_bb = append_block llcontext "else" f in 
+          let _ = position_at_end else_bb builder in
+          let _ = translate_stmt f symtbl else_st in
+            position_at_end start_bb builder;
+            ignore (build_cond_br cond_val then_bb else_bb builder);
+            insert_branch_at_end then_bb endif_bb;
+            insert_branch_at_end else_bb endif_bb;
+            position_at_end endif_bb builder
+      | None -> 
+          position_at_end start_bb builder;
+          ignore (build_cond_br cond_val then_bb endif_bb builder);
+          insert_branch_at_end then_bb endif_bb;
+          position_at_end endif_bb builder
+and build_loop f symtbl cond st =
+  let start_bb = insertion_block builder in
+  let test_bb = append_block llcontext "test" f in
+  let _ = position_at_end test_bb builder in
+  let cond_val = translate_condition symtbl cond false in
+  let loop_bb = append_block llcontext "while" f in
+  let _ = position_at_end loop_bb builder in
+  let _ = translate_stmt f symtbl st in
+  let endw_bb = append_block llcontext "fimw" f in
+    insert_branch_at_end start_bb test_bb;
+    position_at_end test_bb builder;
+    ignore (build_cond_br cond_val loop_bb endw_bb builder);
+    insert_branch_at_end loop_bb test_bb;
+    position_at_end endw_bb builder
 
 
 (** Cria uma declaracao de variavel de pilha (variavel local)
@@ -180,7 +239,7 @@ let translate_fundef (_, name, parms, vars, stmts, retexp) =
     position_at_end bb builder;
     ignore (add_parms f stbl parms (Array.to_list (params f)));
     ignore (add_vars f stbl vars);
-    ignore (List.map (translate_stmt stbl) stmts);
+    ignore (List.map (translate_stmt f stbl) stmts);
     let retv = translate_expr stbl retexp in
     let _ = build_ret retv builder in
       Llvm_analysis.assert_valid_function f;

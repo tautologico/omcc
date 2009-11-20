@@ -26,7 +26,7 @@ type unop = UMinus | Not
 
 
 (** operadores binarios *)
-type binop = Plus | Minus | Mult | Div | Lt | And | Eq
+type binop = Plus | Minus | Mult | Div | Lt | Gt | And | Eq
 
 
 (** expressoes *)

@@ -22,7 +22,7 @@
 %token ELSE IF INT PRINTF PRINTINT RETURN WHILE 
 
 /* operadores */
-%token PLUS MINUS MULT DIV LT AND ATTRIB EQ NOT
+%token PLUS MINUS MULT DIV LT GT AND ATTRIB EQ NOT
 
 /* pontuacao */
 %token LBRACE RBRACE SEMICOLON LPAREN RPAREN COMMA
@@ -86,6 +86,7 @@ andexpr: andexpr AND relexpr   { BinOp ($1, And, $3)   }
        | relexpr               { $1                    }
 
 relexpr: relexpr LT addexpr    { BinOp ($1, Lt, $3)    }
+       | relexpr GT addexpr    { BinOp ($1, Gt, $3)    }
        | relexpr EQ addexpr    { BinOp ($1, Eq, $3)    }
        | addexpr               { $1                    }
 
