@@ -64,7 +64,7 @@ let format_str = define_global "format_str" (const_stringz llcontext "%d") the_m
 (** Obtem uma funcao ja compilada para bitcode *)
 let get_bc_function fname = match lookup_function fname the_module with
     Some f -> f
-  | None -> failwith "Funcao nao encontrada"
+  | None -> failwith ("Funcao nao encontrada: " ^ fname)
 
 
 let find_variable symtbl name = 

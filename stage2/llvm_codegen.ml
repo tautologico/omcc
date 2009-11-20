@@ -42,7 +42,7 @@ let one = const_int int_type 1
 (** Obtem uma funcao ja compilada para bitcode *)
 let get_bc_function fname = match lookup_function fname the_module with
     Some f -> f
-  | None -> failwith "Funcao nao encontrada"
+  | None -> failwith ("Funcao nao encontrada: " ^ fname)
 
 (** Adiciona parametros na tabela de simbolos e 
     associa-os a nomes no codigo LLVM *)
