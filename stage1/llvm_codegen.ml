@@ -67,6 +67,10 @@ let get_bc_function fname = match lookup_function fname the_module with
   | None -> failwith "Funcao nao encontrada"
 
 
+let find_variable symtbl name = 
+  try Hashtbl.find symtbl name with 
+      Not_found -> failwith ("Variavel nao declarada: " ^ name)
+
 (** Traduz uma expressao *)
 let rec translate_expr (symtbl: sym_table) e = match e with
     Num n    -> const_int int_type n
@@ -77,8 +81,8 @@ let rec translate_expr (symtbl: sym_table) e = match e with
 			  translate_binop op lop rop
   | UnOp (op, e) -> let rand = translate_expr symtbl e in
                     translate_unop op rand
-  | Var v -> (try Hashtbl.find symtbl v with 
-		  Not_found -> failwith ("Variavel nao definida: " ^ v))
+  | Var v -> let vr = find_variable symtbl v in
+             build_load vr v builder
   | FunCall (fn, args) -> 
       let f = get_bc_function fn in
       let parms = params f in 
@@ -125,19 +129,29 @@ let rec translate_stmt (symtbl: sym_table) s = match s with
 	    ignore (build_call puts [| buffer_ptr |] "" builder)
 	else
 	  failwith "printint deve imprimir inteiros"
-  | Attrib (v, e) -> failwith "atribuicoes nao implementadas ainda (lol)"
+  | Attrib (v, e) -> 
+      let nv = translate_expr symtbl e in
+      let va = find_variable symtbl v in
+        ignore (build_store nv va builder)
   | Block sl -> ignore (List.map (translate_stmt symtbl) sl)
 
 
+(** Cria uma declaracao de variavel de pilha (variavel local)
+    no bloco de entrada da funcao f para a variavel v *)
+let create_entry_block_alloca f v = 
+  let entry_bldr = builder_at llcontext (instr_begin (entry_block f)) in
+  build_alloca int_type v entry_bldr
+
 (** Adiciona parametros na tabela de simbolos e 
     associa-os a nomes no codigo LLVM *)
-let add_parms (symtbl: sym_table) pdecls parms = 
+let add_parms f (symtbl: sym_table) pdecls parms = 
   let add_var v p = 
     if Hashtbl.mem symtbl v then
       failwith ("Variavel declarada mais de uma vez: " ^ v)
     else
-      set_value_name v p; 
-      Hashtbl.add symtbl v p in
+      let alloca = create_entry_block_alloca f v in
+      let _ = build_store p alloca builder in
+      Hashtbl.add symtbl v alloca in
   List.iter2 add_var (List.map snd pdecls) parms
 
 
@@ -149,9 +163,9 @@ let translate_fundef (_, name, parms, stmts, retexp) =
     | None -> declare_function name ft the_module
     | Some _ -> failwith ("Funcao definida mais de uma vez: " ^ name) in
   let stbl = Hashtbl.create 10 in
-  let () = add_parms stbl parms (Array.to_list (params f)) in
   let bb = append_block llcontext "entry" f in
     position_at_end bb builder;
+    ignore (add_parms f stbl parms (Array.to_list (params f)));
     ignore (List.map (translate_stmt stbl) stmts);
     let retv = translate_expr stbl retexp in
     let _ = build_ret retv builder in

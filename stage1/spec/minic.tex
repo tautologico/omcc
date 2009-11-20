@@ -16,7 +16,7 @@
 \begin{document}
 
 \title{Construção de Compiladores II \\
-       Guia da Linguagem MiniC -- Estágio 0}
+       Guia da Linguagem MiniC -- Estágio 1}
 
 \author{Andrei de A. Formiga}
 
@@ -24,14 +24,15 @@
 
 \section{Introdução}
 
-Este guia descreve o estágio zero da linguagem de programação MiniC. MiniC é uma
+Este guia descreve o estágio um da linguagem de programação MiniC. MiniC é uma
 família de versões simplificadas da linguagem C, criada com o propósito de servir 
 em disciplinas para o aprendizado dos compiladores. As versões são classificadas 
 em \emph{estágios}, em que cada estágio inclui tudo que os estágios anteriores e
 inclui novas características. Desta forma, é possível ver o que muda no 
-compilador com a inclusão dessas novas características. O estágio zero, 
-descrito neste guia, é o mais básico da linguagem, contendo suporte apenas 
-a expressões, declaração e chamada de funções. 
+compilador com a inclusão dessas novas características. O estágio 1, 
+descrito neste guia, tem todas as características do estágio 0 (expressões, 
+declaração e chamada de funções) e adiciona suporte à mudança de valores
+nas variáveis, através do comando de atribuição. 
 
 Todos os estágios da linguagem MiniC são sub-conjuntos da linguagem C, ou seja, 
 todo programa MiniC é também um programa C, mas há muitas características da 
@@ -44,7 +45,7 @@ desta.
 
 Aqui está descrita a estrutura léxica da linguagem e sua gramática livre de 
 contexto. Ao final apresentamos um programas de exemplo usando apenas as 
-características do estágio zero da linguagem MiniC.
+características do estágio um da linguagem MiniC.
 
 
 \section{Estrutura Léxica}
@@ -120,7 +121,8 @@ Não há estruturas de controle de fluxo, portanto não é possível fazer
 muita coisa com a linguagem no estágio 0. Só há um tipo básico: 
 inteiros (\texttt{int}). Não é possível declarar variáveis; as únicas
 variáveis presentes em programas no estágio 0 são os parâmetros das 
-funções. 
+funções. É possível alterar o valor de variáveis com atribuições, 
+mas isso só serve para alterar o valor de um parâmetro. 
 
 
 A gramática usa a notação $N*$, onde $N$ é um não-terminal, para denotar nenhuma,
