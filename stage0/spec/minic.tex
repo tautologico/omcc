@@ -99,8 +99,8 @@ literais string para usar em chamadas a \texttt{printf}.
 operações aritméticas 
 (\verb|+|, \verb|-|, \verb|*| e \verb|/|), os operadores de comparação
 (apenas \verb|<| no estágio 0) e os 
-lógicos (apenas \verb|&&|); há também o operador de atribuição 
-(\verb|=|). Os operadores unários são o de negação lógica (\verb|!|) e
+lógicos (apenas \verb|&&|). Os operadores unários são o de negação 
+lógica (\verb|!|) e
 a negação (inverte o sinal de um inteiro), usando um sinal de menos 
 antes do termo a ser negado. 
 
@@ -120,7 +120,8 @@ Não há estruturas de controle de fluxo, portanto não é possível fazer
 muita coisa com a linguagem no estágio 0. Só há um tipo básico: 
 inteiros (\texttt{int}). Não é possível declarar variáveis; as únicas
 variáveis presentes em programas no estágio 0 são os parâmetros das 
-funções. 
+funções. Também não é possível alterar o valor das variáveis, pois 
+comandos de atribuição não existem no estágio 0. 
 
 
 A gramática usa a notação $N*$, onde $N$ é um não-terminal, para denotar nenhuma,
