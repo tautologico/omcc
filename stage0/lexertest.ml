@@ -22,7 +22,6 @@ let tok2str tok = match tok with
   | DIV        -> "DIV"
   | LT         -> "LT"
   | AND        -> "AND"
-  | ATTRIB     -> "ATTRIB"
   | EQ         -> "EQ"
   | NOT        -> "NOT"
   | LBRACE     -> "LBRACE"

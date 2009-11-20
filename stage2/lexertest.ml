@@ -12,10 +12,12 @@ open Parser
 
 let tok2str tok = match tok with
   | PROLOG     -> "PROLOG"
+  | ELSE       -> "ELSE"
+  | IF         -> "IF"
   | INT        -> "INT" 
   | PRINTF     -> "PRINTF"
-  | PRINTINT   -> "PRINTINT"
   | RETURN     -> "RETURN"
+  | WHILE      -> "WHILE"
   | PLUS       -> "PLUS"
   | MINUS      -> "MINUS"
   | MULT       -> "MULT"
@@ -35,6 +37,7 @@ let tok2str tok = match tok with
   | NUM n      -> "NUM " ^ (string_of_int n)
   | ID id      -> "ID " ^ id
   | STR s      -> "STR '" ^ s ^ "'"
+
 
 let main fname = 
   let infile = open_in fname in

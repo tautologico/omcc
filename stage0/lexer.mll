@@ -48,7 +48,6 @@ rule next_token = parse
   | '<'				{ LT     }
   | "&&"			{ AND    }
   | "=="			{ EQ     }
-  | '='				{ ATTRIB }
   | '!'                         { NOT    }
 
   (* pontuacao *)

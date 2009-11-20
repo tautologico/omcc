@@ -43,7 +43,6 @@ type expr =
 type stmt = 
   | PrintS of expr
   | PrintI of expr
-  | Attrib of id * expr
   | Block of stmt list
 
 

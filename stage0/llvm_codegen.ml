@@ -125,7 +125,6 @@ let rec translate_stmt (symtbl: sym_table) s = match s with
 	    ignore (build_call puts [| buffer_ptr |] "" builder)
 	else
 	  failwith "printint deve imprimir inteiros"
-  | Attrib (v, e) -> failwith "atribuicoes nao implementadas ainda (lol)"
   | Block sl -> ignore (List.map (translate_stmt symtbl) sl)
 
 

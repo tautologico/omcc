@@ -34,11 +34,14 @@ rule next_token = parse
   | '"' [^'"' '\n']* '"' as s   { STR (remove_quotes s) }
 
   (* palavras-chave *)
+  | "char"			{ CHAR     }
+  | "else"			{ ELSE     }
+  | "if"			{ IF       }
   | "int"			{ INT      }
   | "printf"			{ PRINTF   }
   | "printint"                  { PRINTINT }
   | "return"			{ RETURN   }
-
+  | "while"			{ WHILE    }
 
   (* operadores *)
   | '+'				{ PLUS   }

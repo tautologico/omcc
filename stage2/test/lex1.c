@@ -3,8 +3,10 @@
 
 int main()
 {
-  y + 3 + w;
-  w < x == 678;
+  int x;
+
+  z = y + 3 + w;
+  y = w < x == 678;
 
   printf("Das ist eine string");
 
