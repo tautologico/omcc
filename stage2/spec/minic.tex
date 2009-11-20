@@ -16,7 +16,7 @@
 \begin{document}
 
 \title{Construção de Compiladores II \\
-       Guia da Linguagem MiniC -- Estágio 1}
+       Guia da Linguagem MiniC -- Estágio 2}
 
 \author{Andrei de A. Formiga}
 
@@ -29,15 +29,15 @@ família de versões simplificadas da linguagem C, criada com o propósito de servi
 em disciplinas para o aprendizado dos compiladores. As versões são classificadas 
 em \emph{estágios}, em que cada estágio inclui tudo que os estágios anteriores e
 inclui novas características. Desta forma, é possível ver o que muda no 
-compilador com a inclusão dessas novas características. O estágio 1, 
-descrito neste guia, tem todas as características do estágio 0 (expressões, 
-declaração e chamada de funções) e adiciona suporte à mudança de valores
-nas variáveis, através do comando de atribuição. 
+compilador com a inclusão dessas novas características. O estágio 2, 
+descrito neste guia, tem todas as características dos estágios 0 e 1 
+(expressões, declaração e chamada de funções, assim como atribuições) e 
+adiciona suporte à declaração de variáveis locais nas funções. 
 
 Todos os estágios da linguagem MiniC são sub-conjuntos da linguagem C, ou seja, 
 todo programa MiniC é também um programa C, mas há muitas características da 
 linguagem C completa que não aparecem em MiniC, independente do estágio; 
-no estágio 1 o número de características que faltam ainda é bastante 
+no estágio 2 o número de características que faltam ainda é bastante 
 significativo. Por exemplo, o único tipo suportado é \texttt{int} para inteiros,
 e não é possível escrever o programa usando mais de um arquivo fonte. Não existem 
 protótipos: cada função usada pela função \texttt{main} deve ser definida antes 
@@ -99,7 +99,7 @@ literais string para usar em chamadas a \texttt{printf}.
 \paragraph{Operadores} Os operadores binários em MiniC são as quatro 
 operações aritméticas 
 (\verb|+|, \verb|-|, \verb|*| e \verb|/|), os operadores de comparação
-(apenas \verb|<| no estágio 1) e os 
+(apenas \verb|<| no estágio 2) e os 
 lógicos (apenas \verb|&&|); há também o operador de atribuição 
 (\verb|=|). Os operadores unários são o de negação lógica (\verb|!|) e
 a negação (inverte o sinal de um inteiro), usando um sinal de menos 
@@ -109,7 +109,7 @@ antes do termo a ser negado.
 para comentários de uma única linha; a sequência de caracteres \verb|//|
 marca o início de comentário, que se estende até o final da mesma linha. 
 Os comentários multi-linha da linguagem C (usando \verb|/*| e \verb|*/|)
-não são suportados no estágio 1. 
+não são suportados no estágio 2. 
 
 \section{Gramática}
 
@@ -118,11 +118,10 @@ ter pelo menos uma função, a função principal, chamada de \texttt{main}.
 Antes da função principal pode ser definido um número qualquer de outras 
 funções, que poderão ser chamadas de \texttt{main} ou de outras funções.
 Não há estruturas de controle de fluxo, portanto não é possível fazer 
-muita coisa com a linguagem no estágio 1. Só há um tipo básico: 
-inteiros (\texttt{int}). Não é possível declarar variáveis; as únicas
-variáveis presentes em programas no estágio 1 são os parâmetros das 
-funções. É possível alterar o valor de variáveis com atribuições, 
-mas isso só serve para alterar o valor de um parâmetro. 
+muita coisa com a linguagem no estágio 2. Só há um tipo básico: 
+inteiros (\texttt{int}). É possível declarar variáveis locais a cada 
+função; não existe suporte para variáveis globais.
+É possível alterar o valor de variáveis com atribuições.
 
 
 A gramática usa a notação $N*$, onde $N$ é um não-terminal, para denotar nenhuma,
@@ -144,7 +143,7 @@ Prologo         & \produces & \verb|#include <stdio.h>| \\
 DeclVar         & \produces & \kword{int}\ id\ \verb|;| \\
 DeclFunc        & \produces & \kword{int}\ id\ \verb|( | ListaArgumentos
                               \verb| )| \\
-                &           & \verb|{ | %% DeclVar*\ 
+                &           & \verb|{ | DeclVar*\ 
                               Comando*\ 
                               \kword{return} Exp\ \verb|; }| \\
 ListaArgumentos & \produces & \kword{int}\ id\ RestoListaArgs* \\
@@ -172,14 +171,16 @@ RestoListaExp   & \produces & \verb|, | ListaExp \\
                 & \verb+|+  & \varepsilon \\
 \end{array}
 \]
-\caption{Gramática da linguagem MiniC -- Estágio 1} \label{fig:gramminic}
+\caption{Gramática da linguagem MiniC -- Estágio 2} \label{fig:gramminic}
 \end{figure}
 
 
 \section{Exemplos}
 
 Vemos abaixo um exemplo simples de programa que calcula o discriminante da 
-equação de segundo grau $x^2 - 3x + 2$.
+equação de segundo grau $x^2 - 5x + 3$. Este programa faz o cálculo criando
+resultados intermediários, por exemplo a variável \texttt{b2} para 
+representar o valor de $b^2$. 
 O exemplo está na figura \ref{fig:exfat}.
 
 \begin{figure}[htbp]
@@ -188,13 +189,21 @@ O exemplo está na figura \ref{fig:exfat}.
 
 int delta(int a, int b, int c)
 {
-   return b * b - 4 * a * c;
+   int b2; 
+   int ac4;
+   int d;
+
+   b2  = b * b;
+   ac4 = 4 * a * c;
+   d   = b2 - ac4;
+
+   return d;
 }
 
 int main()
 {
-   // calcula o discriminante da eq. de segundo grau x^2 - 3x + 2
-   printint(delta(1, -3, 2));
+   // calcula o discriminante da eq. de segundo grau x^2 - 5x + 3
+   printint(delta(1, -5, 3));
    return 0;
 }
 \end{verbatim}
