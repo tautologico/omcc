@@ -19,7 +19,7 @@
 %token PROLOG
 
 /* palavras-chave */
-%token ELSE IF INT PRINTF PRINTINT RETURN VOID WHILE 
+%token ELSE IF INT PRINTF PRINTINT RETURN WHILE 
 
 /* operadores */
 %token PLUS MINUS MULT DIV LT AND ATTRIB EQ NOT
@@ -55,7 +55,6 @@ fundecl: rtype ID LPAREN arglist RPAREN
 
 
 rtype: INT                    { Int  }
-     | VOID                   { Void }
 
 
 arglist:                      { []              }

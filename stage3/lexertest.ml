@@ -16,6 +16,7 @@ let tok2str tok = match tok with
   | IF         -> "IF"
   | INT        -> "INT" 
   | PRINTF     -> "PRINTF"
+  | PRINTINT   -> "PRINTINT"
   | RETURN     -> "RETURN"
   | WHILE      -> "WHILE"
   | PLUS       -> "PLUS"
